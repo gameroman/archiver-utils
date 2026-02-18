@@ -5,20 +5,18 @@
  * Licensed under the MIT license.
  * https://github.com/archiverjs/archiver-utils/blob/master/LICENSE
  */
-var fs = require('graceful-fs');
-var path = require('path');
-var isStream = require('is-stream');
-var lazystream = require('lazystream');
-var normalizePath = require('normalize-path');
-var defaults = require('lodash/defaults');
+import { createReadStream, readdir, stat } from 'graceful-fs';
+import { join, relative as _relative } from 'path';
+import isStream from 'is-stream';
+import { Readable } from 'lazystream';
+import normalizePath from 'normalize-path';
+import defaults from 'lodash/defaults';
 
-var Stream = require('stream').Stream;
-var PassThrough = require('readable-stream').PassThrough;
+import { PassThrough } from 'readable-stream';
 
-var utils = module.exports = {};
-utils.file = require('./file.js');
+export * as file from './file.js';
 
-utils.collectStream = function(source, callback) {
+export function collectStream(source, callback) {
   var collection = [];
   var size = 0;
 
@@ -40,9 +38,9 @@ utils.collectStream = function(source, callback) {
 
     callback(null, buf);
   });
-};
+}
 
-utils.dateify = function(dateish) {
+export function dateify(dateish) {
   dateish = dateish || new Date();
 
   if (dateish instanceof Date) {
@@ -54,32 +52,34 @@ utils.dateify = function(dateish) {
   }
 
   return dateish;
-};
+}
 
 // this is slightly different from lodash version
-utils.defaults = function(object, source, guard) {
+const _defaults = function (object, source, guard) {
   var args = arguments;
   args[0] = args[0] || {};
 
   return defaults(...args);
 };
+export { _defaults as defaults };
 
-utils.isStream = function(source) {
+const _isStream = function (source) {
   return isStream(source);
 };
+export { _isStream as isStream };
 
-utils.lazyReadStream = function(filepath) {
-  return new lazystream.Readable(function() {
-    return fs.createReadStream(filepath);
+export function lazyReadStream(filepath) {
+  return new Readable(function() {
+    return createReadStream(filepath);
   });
-};
+}
 
-utils.normalizeInputSource = function(source) {
+export function normalizeInputSource(source) {
   if (source === null) {
     return Buffer.alloc(0);
   } else if (typeof source === 'string') {
     return Buffer.from(source);
-  } else if (utils.isStream(source)) {
+  } else if (_isStream(source)) {
     // Always pipe through a PassThrough stream to guarantee pausing the stream if it's already flowing,
     // since it will only be processed in a (distant) future iteration of the event loop, and will lose
     // data if already flowing now.
@@ -87,21 +87,21 @@ utils.normalizeInputSource = function(source) {
   }
 
   return source;
-};
+}
 
-utils.sanitizePath = function(filepath) {
+export function sanitizePath(filepath) {
   return normalizePath(filepath, false).replace(/^\w+:/, '').replace(/^(\.\.\/|\/)+/, '');
-};
+}
 
-utils.trailingSlashIt = function(str) {
+export function trailingSlashIt(str) {
   return str.slice(-1) !== '/' ? str + '/' : str;
-};
+}
 
-utils.unixifyPath = function(filepath) {
+export function unixifyPath(filepath) {
   return normalizePath(filepath, false).replace(/^\w+:/, '');
-};
+}
 
-utils.walkdir = function(dirpath, base, callback) {
+export function walkdir(dirpath, base, callback) {
   var results = [];
 
   if (typeof base === 'function') {
@@ -109,7 +109,7 @@ utils.walkdir = function(dirpath, base, callback) {
     base = dirpath;
   }
 
-  fs.readdir(dirpath, function(err, list) {
+  readdir(dirpath, function(err, list) {
     var i = 0;
     var file;
     var filepath;
@@ -125,17 +125,17 @@ utils.walkdir = function(dirpath, base, callback) {
         return callback(null, results);
       }
 
-      filepath = path.join(dirpath, file);
+      filepath = join(dirpath, file);
 
-      fs.stat(filepath, function(err, stats) {
+      stat(filepath, function(err, stats) {
         results.push({
           path: filepath,
-          relative: path.relative(base, filepath).replace(/\\/g, '/'),
+          relative: _relative(base, filepath).replace(/\\/g, '/'),
           stats: stats
         });
 
         if (stats && stats.isDirectory()) {
-          utils.walkdir(filepath, base, function(err, res) {
+          walkdir(filepath, base, function(err, res) {
 	    if(err){
 	      return callback(err);
 	    }
@@ -152,4 +152,4 @@ utils.walkdir = function(dirpath, base, callback) {
       });
     })();
   });
-};
+}

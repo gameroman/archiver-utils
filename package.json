@@ -19,7 +19,7 @@
     "archiver",
     "utils"
   ],
-  "main": "index.js",
+  "main": "src/index.js",
   "files": [
     "index.js",
     "file.js"
@@ -28,7 +28,7 @@
     "node": ">= 14"
   },
   "scripts": {
-    "test": "mocha --reporter dot"
+    "test": "mocha tests --reporter dot"
   },
   "dependencies": {
     "glob": "^10.0.0",
@@ -41,8 +41,6 @@
   },
   "devDependencies": {
     "chai": "4.5.0",
-    "mkdirp": "3.0.1",
-    "mocha": "10.7.3",
-    "rimraf": "5.0.10"
+    "mocha": "10.7.3"
   }
 }
