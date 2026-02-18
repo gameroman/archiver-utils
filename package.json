@@ -1,20 +1,8 @@
 {
-  "name": "archiver-utils",
-  "version": "5.0.2",
+  "name": "@archiver/utils",
+  "version": "0.0.0",
   "license": "MIT",
   "description": "utility functions for archiver",
-  "homepage": "https://github.com/archiverjs/archiver-utils#readme",
-  "author": {
-    "name": "Chris Talkington",
-    "url": "http://christalkington.com/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/archiverjs/archiver-utils.git"
-  },
-  "bugs": {
-    "url": "https://github.com/archiverjs/archiver-utils/issues"
-  },
   "keywords": [
     "archiver",
     "utils"
@@ -25,10 +13,10 @@
     "file.js"
   ],
   "engines": {
-    "node": ">= 14"
+    "node": ">=22"
   },
   "scripts": {
-    "test": "mocha tests --reporter dot"
+    "test": "bun test --reporter dot"
   },
   "dependencies": {
     "glob": "^10.0.0",
@@ -38,9 +26,5 @@
     "lodash": "^4.17.15",
     "normalize-path": "^3.0.0",
     "readable-stream": "^4.0.0"
-  },
-  "devDependencies": {
-    "chai": "4.5.0",
-    "mocha": "10.7.3"
   }
 }
